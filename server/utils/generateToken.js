@@ -12,7 +12,10 @@ const generateToken = async (res, userId) => {
     expiresIn: '7d',
   });
 
-  const isProduction = process.env.NODE_ENV === 'production';
+  const host = res.req ? res.req.get('host') : '';
+  const isProduction = process.env.NODE_ENV === 'production' || 
+                       process.env.RENDER === 'true' || 
+                       (host && !host.includes('localhost') && !host.includes('127.0.0.1'));
 
   // Set Access Token as HTTP-Only Cookie (expiring in 30 days)
   res.cookie('access_token', accessToken, {

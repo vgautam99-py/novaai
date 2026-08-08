@@ -337,7 +337,10 @@ export const logoutUser = async (req, res) => {
     console.error('Logout database session removal failed:', error.message);
   }
 
-  const isProduction = process.env.NODE_ENV === 'production';
+  const host = res.req ? res.req.get('host') : '';
+  const isProduction = process.env.NODE_ENV === 'production' || 
+                       process.env.RENDER === 'true' || 
+                       (host && !host.includes('localhost') && !host.includes('127.0.0.1'));
   res.cookie('access_token', '', {
     httpOnly: true,
     expires: new Date(0),
