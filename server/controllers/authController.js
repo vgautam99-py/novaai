@@ -316,13 +316,18 @@ export const logoutUser = async (req, res) => {
     console.error('Logout database session removal failed:', error.message);
   }
 
+  const isProduction = process.env.NODE_ENV === 'production';
   res.cookie('access_token', '', {
     httpOnly: true,
     expires: new Date(0),
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax'
   });
   res.cookie('refresh_token', '', {
     httpOnly: true,
     expires: new Date(0),
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax'
   });
   res.status(200).json({ success: true, message: 'Logged out successfully' });
 };
