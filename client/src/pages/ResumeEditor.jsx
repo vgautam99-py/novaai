@@ -411,9 +411,11 @@ const ResumeEditor = () => {
             
             <button
               onClick={handleSave}
-              className="flex items-center gap-2 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] hover:opacity-95 text-white px-4 py-2 text-xs font-bold rounded-xl cursor-pointer transition-all"
+              className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] hover:opacity-95 text-white p-2.5 md:px-4 md:py-2 text-xs font-bold rounded-xl cursor-pointer transition-all shrink-0"
+              title="Save Details"
             >
-              <Save className="w-4 h-4" /> Save Details
+              <Save className="w-4 h-4" />
+              <span className="hidden md:inline">Save Details</span>
             </button>
           </div>
 
@@ -441,7 +443,7 @@ const ResumeEditor = () => {
             {/* Contact Tab */}
             {activeTab === 'personal' && (
               <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-[10px] font-bold text-[#A1A1AA] uppercase tracking-wider mb-2">Full Name</label>
                     <input
@@ -462,9 +464,7 @@ const ResumeEditor = () => {
                       placeholder="jane@example.com"
                     />
                   </div>
-                </div>
 
-                <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-[10px] font-bold text-[#A1A1AA] uppercase tracking-wider mb-2">Phone</label>
                     <input
@@ -485,29 +485,7 @@ const ResumeEditor = () => {
                       placeholder="Mumbai, IN"
                     />
                   </div>
-                </div>
 
-                <div className="grid grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-[10px] font-bold text-[#A1A1AA] uppercase tracking-wider mb-2">Country</label>
-                    <input
-                      type="text"
-                      value={resumeData.personalInfo.country}
-                      onChange={(e) => handlePersonalInfoChange('country', e.target.value)}
-                      className="w-full p-2.5 bg-[#09090B] border border-[#27272A] rounded-xl text-xs text-white outline-none focus:border-indigo-500"
-                      placeholder="India"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[10px] font-bold text-[#A1A1AA] uppercase tracking-wider mb-2">Postal Code</label>
-                    <input
-                      type="text"
-                      value={resumeData.personalInfo.zipCode}
-                      onChange={(e) => handlePersonalInfoChange('zipCode', e.target.value)}
-                      className="w-full p-2.5 bg-[#09090B] border border-[#27272A] rounded-xl text-xs text-white outline-none focus:border-indigo-500"
-                      placeholder="400001"
-                    />
-                  </div>
                   <div>
                     <label className="block text-[10px] font-bold text-[#A1A1AA] uppercase tracking-wider mb-2">Date of Birth</label>
                     <input
@@ -518,9 +496,6 @@ const ResumeEditor = () => {
                       placeholder="e.g., 12 Jan 1995"
                     />
                   </div>
-                </div>
-
-                <div className="grid grid-cols-3 gap-4">
                   <div>
                     <label className="block text-[10px] font-bold text-[#A1A1AA] uppercase tracking-wider mb-2">Gender</label>
                     <input
@@ -531,6 +506,7 @@ const ResumeEditor = () => {
                       placeholder="Male / Female"
                     />
                   </div>
+
                   <div>
                     <label className="block text-[10px] font-bold text-[#A1A1AA] uppercase tracking-wider mb-2">Industry</label>
                     <input
@@ -1187,10 +1163,10 @@ const ResumeEditor = () => {
                     A4 Preview
                   </div>
                   
-                  <div className="w-full flex justify-center overflow-x-auto overflow-y-auto max-h-[700px] p-2 bg-slate-900/30 rounded-xl border border-slate-800/40">
+                  <div className="w-full flex justify-center overflow-hidden p-2 bg-slate-900/30 rounded-xl border border-slate-800/40 h-[380px] sm:h-[500px] md:h-[700px]">
                     <div 
                       id="resume-print-node" 
-                      className="w-[800px] h-fit bg-white shadow-2xl scale-[0.75] origin-top md:scale-[0.8] lg:scale-[0.85] shrink-0"
+                      className="w-[800px] h-fit bg-white shadow-2xl scale-[0.38] min-[400px]:scale-[0.45] sm:scale-[0.6] md:scale-[0.75] lg:scale-[0.85] origin-top shrink-0"
                     >
                       {renderTemplate()}
                     </div>

@@ -94,7 +94,7 @@ const Sidebar = ({ isOpen, onClose }) => {
           </div>
 
           {/* Menu Items */}
-          <div className="px-3 pb-6 space-y-5">
+          <div className="px-3 pt-6 pb-6 space-y-5">
             <div>
               <button
                 onClick={() => handleNav('/dashboard')}

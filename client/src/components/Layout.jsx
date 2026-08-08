@@ -22,7 +22,9 @@ const Layout = () => {
 
       {/* Main workspace container */}
       <div className="flex-grow flex flex-col h-screen max-h-screen overflow-hidden relative z-10">
-        {!isDashboard && <Header onMenuToggle={() => setSidebarOpen(!sidebarOpen)} />}
+        <div className={isDashboard ? 'block md:hidden' : 'block'}>
+          <Header onMenuToggle={() => setSidebarOpen(!sidebarOpen)} />
+        </div>
         
         {/* Nested page view */}
         <main className="flex-grow overflow-y-auto p-4 md:p-6 bg-transparent">

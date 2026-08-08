@@ -149,7 +149,7 @@ const Dashboard = () => {
           <p className="text-xs text-[#A1A1AA]">Manage templates, generate artwork, and test compliance models.</p>
         </div>
 
-        <div className="flex items-center gap-4 z-20">
+        <div className="hidden md:flex items-center gap-4 z-20">
           <div className="relative group cursor-pointer">
             {user?.avatar ? (
               <img src={user.avatar} alt="Avatar" className="w-10 h-10 rounded-full object-cover border border-[#27272A] shadow-sm hover:border-[#6366F1]/50 transition-all hover:scale-105 duration-200" />

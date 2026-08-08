@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Menu, Zap, LogOut, Award } from 'lucide-react';
+import logo from '../assets/logo.jpg';
 
 const Header = ({ onMenuToggle }) => {
   const { user, logout } = useAuth();
@@ -38,6 +39,14 @@ const Header = ({ onMenuToggle }) => {
             Workspace Panel
           </span>
         </div>
+      </div>
+
+      {/* Center Logo & Name (visible ONLY on mobile screens) */}
+      <div className="flex md:hidden items-center gap-2 absolute left-1/2 transform -translate-x-1/2">
+        <img src={logo} alt="Logo" className="h-6 w-6 rounded-md border border-[#27272A]" />
+        <span className="font-outfit font-bold text-sm text-white tracking-tight">
+          Nova<span className="text-[#6366F1]">AI</span>
+        </span>
       </div>
 
       {/* Right: Credits Capsule & Avatar */}
