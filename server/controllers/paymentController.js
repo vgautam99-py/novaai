@@ -6,7 +6,8 @@ import User from '../models/User.js';
 // @route   POST /api/payments/order
 // @access  Private
 export const createOrder = async (req, res) => {
-  const { planName, billingCycle } = req.body;
+  const planName = req.body.planName || req.body.plan;
+  const { billingCycle } = req.body;
 
   if (!planName) {
     return res.status(400).json({ success: false, message: 'Plan name is required' });
@@ -74,7 +75,8 @@ export const createOrder = async (req, res) => {
 // @route   POST /api/payments/verify
 // @access  Private
 export const verifyPayment = async (req, res) => {
-  const { razorpay_order_id, razorpay_payment_id, razorpay_signature, planName } = req.body;
+  const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+  const planName = req.body.planName || req.body.plan;
 
   if (!planName) {
     return res.status(400).json({ success: false, message: 'Plan name is required' });

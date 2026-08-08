@@ -54,6 +54,16 @@ const Plans = () => {
     }
   ];
 
+  const loadRazorpayScript = () => {
+    return new Promise((resolve) => {
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
   const handleUpgrade = async (planId) => {
     if (!user) {
       toast.error('Please log in to upgrade plans');
@@ -66,30 +76,81 @@ const Plans = () => {
 
     try {
       setLoadingPlan(planId);
-      toast.loading('Initializing checkout checkout...', { id: 'payment' });
+      toast.loading('Initializing checkout...', { id: 'payment' });
 
       // Call server backend order create endpoint
       const { data } = await axios.post('/api/payments/order', { plan: planId });
 
       if (data.success) {
-        // If razorpay credentials exist, trigger razorpay. Currently defaults to mock confirmation in server controller
-        // Confirm mock transaction receipt
-        const confirmRes = await axios.post('/api/payments/verify', {
-          razorpay_payment_id: 'pay_mock_' + Math.random().toString(36).substring(7),
-          razorpay_order_id: data.orderId,
-          razorpay_signature: 'sig_mock_' + Math.random().toString(36).substring(7),
-          plan: planId
-        });
+        if (data.mock) {
+          // Confirm mock transaction receipt for testing
+          const confirmRes = await axios.post('/api/payments/verify', {
+            razorpay_payment_id: 'pay_mock_' + Math.random().toString(36).substring(7),
+            razorpay_order_id: data.orderId,
+            razorpay_signature: 'sig_mock_' + Math.random().toString(36).substring(7),
+            plan: planId
+          });
 
-        if (confirmRes.data.success) {
-          toast.success(`Upgraded to ${planId.toUpperCase()} successfully!`, { id: 'payment' });
-          // Fetch updated profile
-          const profileRes = await axios.get('/api/auth/profile');
-          if (profileRes.data.success) {
-            setUser(profileRes.data.user);
+          if (confirmRes.data.success) {
+            toast.success(`Upgraded to ${planId.toUpperCase()} successfully!`, { id: 'payment' });
+            const profileRes = await axios.get('/api/auth/profile');
+            if (profileRes.data.success) {
+              setUser(profileRes.data.user);
+            }
+          } else {
+            toast.error('Payment validation failed', { id: 'payment' });
           }
         } else {
-          toast.error('Payment validation failed', { id: 'payment' });
+          // Load Razorpay checkout script
+          const isLoaded = await loadRazorpayScript();
+          if (!isLoaded) {
+            toast.error('Failed to load Razorpay checkout SDK. Check connection.', { id: 'payment' });
+            return;
+          }
+
+          toast.dismiss('payment');
+
+          const options = {
+            key: data.keyId,
+            amount: data.amount,
+            currency: data.currency,
+            name: 'NovaAI Workspace Suite',
+            description: `Upgrade Subscription to ${planId.toUpperCase()}`,
+            order_id: data.orderId,
+            handler: async function (response) {
+              toast.loading('Verifying transaction details...', { id: 'payment' });
+              try {
+                const confirmRes = await axios.post('/api/payments/verify', {
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_signature: response.razorpay_signature,
+                  plan: planId
+                });
+
+                if (confirmRes.data.success) {
+                  toast.success(`Upgraded to ${planId.toUpperCase()} successfully!`, { id: 'payment' });
+                  const profileRes = await axios.get('/api/auth/profile');
+                  if (profileRes.data.success) {
+                    setUser(profileRes.data.user);
+                  }
+                } else {
+                  toast.error('Cryptographic validation failed', { id: 'payment' });
+                }
+              } catch (err) {
+                toast.error(err.response?.data?.message || err.message, { id: 'payment' });
+              }
+            },
+            prefill: {
+              name: user.name,
+              email: user.email,
+            },
+            theme: {
+              color: '#6366F1',
+            },
+          };
+
+          const rzp = new window.Razorpay(options);
+          rzp.open();
         }
       }
     } catch (err) {

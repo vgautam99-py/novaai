@@ -35,11 +35,12 @@ connectCloudinary();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// CORS setup to allow credentials checks from client
+const clientUrl = process.env.CLIENT_URL ? process.env.CLIENT_URL.replace(/\/$/, '') : '';
+
 const allowedOrigins = [
   'http://localhost:5173', 
   'http://127.0.0.1:5173',
-  process.env.CLIENT_URL
+  clientUrl
 ].filter(Boolean);
 
 const corsOptions = {
@@ -47,7 +48,7 @@ const corsOptions = {
     if (!origin) return callback(null, true);
     if (
       allowedOrigins.includes(origin) || 
-      (process.env.CLIENT_URL && origin.includes(process.env.CLIENT_URL)) || 
+      (clientUrl && origin === clientUrl) || 
       origin.endsWith('.vercel.app')
     ) {
       return callback(null, true);

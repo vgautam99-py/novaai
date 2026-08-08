@@ -7,6 +7,16 @@ import axios from 'axios';
 
 // Verify Firebase Google ID Token signature using Google's public certificates
 const verifyFirebaseGoogleToken = async (idToken) => {
+  // If it's a mock token (used for offline development), bypass verification checks
+  if (idToken && idToken.startsWith('mock_google_id_token_')) {
+    return {
+      email: 'testuser@novaai.com',
+      name: 'Test Creator',
+      avatar: '',
+      firebaseUid: 'mock_uid_12345'
+    };
+  }
+
   try {
     // 1. Fetch public certificates from Google
     const certsResponse = await axios.get('https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com');
@@ -214,6 +224,17 @@ export const registerUser = async (req, res) => {
 
   if (!name || !email || !password) {
     return res.status(400).json({ success: false, message: 'All fields are required' });
+  }
+
+  // Email format validation check
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ success: false, message: 'Please provide a valid email address' });
+  }
+
+  // Password length validation check
+  if (password.length < 6) {
+    return res.status(400).json({ success: false, message: 'Password must be at least 6 characters long' });
   }
 
   try {
