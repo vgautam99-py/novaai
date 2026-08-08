@@ -1,0 +1,13 @@
+import express from 'express';
+import { createOrder, verifyPayment } from '../controllers/paymentController.js';
+import protect from '../middleware/authMiddleware.js';
+
+const router = express.Router();
+
+// Protect billing routes
+router.use(protect);
+
+router.post('/order', createOrder);
+router.post('/verify', verifyPayment);
+
+export default router;
