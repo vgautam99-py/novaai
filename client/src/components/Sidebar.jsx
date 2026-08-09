@@ -39,12 +39,12 @@ const Sidebar = ({ isOpen, onClose }) => {
   const careerTools = [
     { name: 'Resume Builder', icon: <FileText className="h-4 w-4" />, path: '/resume-builder' },
     { name: 'ATS Score Checker', icon: <FileCheck className="h-4 w-4" />, path: '/ats' },
-    { name: 'Cover Letter Gen', icon: <PenTool className="h-4 w-4" />, path: '/cover-letter' },
+    { name: 'Cover Letter Generator', icon: <PenTool className="h-4 w-4" />, path: '/cover-letter' },
   ];
 
   const aiSaaSPlayground = [
     { name: 'Article Generator', icon: <Newspaper className="h-4 w-4" />, path: '/article-generator' },
-    { name: 'Blog Title Gen', icon: <Type className="h-4 w-4" />, path: '/blog-title-generator' },
+    { name: 'Blog Title Generator', icon: <Type className="h-4 w-4" />, path: '/blog-title-generator' },
     { name: 'Image Generator', icon: <Image className="h-4 w-4" />, path: '/image-generator' },
     { name: 'Background Remover', icon: <Scissors className="h-4 w-4" />, path: '/background-remover' },
     { name: 'Community Creations', icon: <Users className="h-4 w-4" />, path: '/community' },

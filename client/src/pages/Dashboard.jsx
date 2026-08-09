@@ -102,7 +102,7 @@ const Dashboard = () => {
       color: 'hover:border-emerald-500/50 hover:bg-emerald-555/5'
     },
     {
-      title: 'Cover Letter Letter',
+      title: 'Cover Letter Generator',
       desc: 'Bespoke letter generators matching selected qualifications to JDs.',
       icon: <PenTool className="h-4.5 w-4.5 text-amber-400" />,
       path: '/cover-letter',

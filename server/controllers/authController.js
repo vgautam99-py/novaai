@@ -444,10 +444,15 @@ export const refreshAccessToken = async (req, res) => {
       expiresIn: '15m',
     });
 
+    const host = res.req ? res.req.get('host') : '';
+    const isProduction = process.env.NODE_ENV === 'production' || 
+                         process.env.RENDER === 'true' || 
+                         (host && !host.includes('localhost') && !host.includes('127.0.0.1'));
+
     res.cookie('access_token', accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
       maxAge: 15 * 60 * 1000,
     });
 
