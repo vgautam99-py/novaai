@@ -25,6 +25,9 @@ import toast from 'react-hot-toast';
 const Dashboard = () => {
   const { user, setUser, logout } = useAuth();
   const navigate = useNavigate();
+  
+  console.log('[Dashboard] Current User:', user);
+
   const [resumes, setResumes] = useState([]);
   const [creations, setCreations] = useState([]);
   const [loadingResumes, setLoadingResumes] = useState(true);
@@ -150,11 +153,18 @@ const Dashboard = () => {
         </div>
 
         <div className="hidden md:flex items-center gap-4 z-20">
-          <div className="relative group cursor-pointer">
+          <div 
+            onClick={() => navigate('/profile')} 
+            className="relative group cursor-pointer"
+          >
             {user?.avatar ? (
-              <img src={user.avatar} alt="Avatar" className="w-10 h-10 rounded-full object-cover border border-[#27272A] shadow-sm hover:border-[#6366F1]/50 transition-all hover:scale-105 duration-200" />
+              <img 
+                src={user.avatar} 
+                alt="Avatar" 
+                className="w-10 h-10 rounded-full object-cover border border-[#27272A] shadow-sm hover:border-[#6366F1]/50 hover:scale-105 duration-200 transition-all" 
+              />
             ) : (
-              <div className="w-10 h-10 rounded-full bg-[#6366F1]/10 border border-[#27272A] text-indigo-400 flex items-center justify-center font-bold text-sm hover:border-[#6366F1]/50 transition-all hover:scale-105 duration-200">
+              <div className="w-10 h-10 rounded-full bg-[#6366F1]/10 border border-[#27272A] text-[#6366F1] flex items-center justify-center font-bold text-sm hover:border-[#6366F1]/50 hover:scale-105 duration-200 transition-all">
                 {user?.name ? user.name[0].toUpperCase() : 'U'}
               </div>
             )}
@@ -163,9 +173,10 @@ const Dashboard = () => {
             <div className="absolute right-0 mt-2.5 w-48 bg-[#111111] border border-[#27272A] rounded-xl shadow-xl p-3.5 text-left opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
               <h4 className="text-xs font-bold text-white leading-tight truncate">{user?.name || 'Creator'}</h4>
               <p className="text-[9px] text-[#A1A1AA] mt-0.5 truncate">{user?.email}</p>
+              
               <div className="mt-2.5 pt-2 border-t border-[#27272A] flex items-center justify-between">
                 <span className="text-[9px] text-[#A1A1AA] font-bold uppercase tracking-wider">Plan</span>
-                <span className="text-[9px] font-bold text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded-full uppercase flex items-center gap-1">
+                <span className="text-[9px] font-bold text-[#6366F1] bg-[#6366F1]/10 px-2 py-0.5 rounded-full uppercase flex items-center gap-1">
                   <Award className="h-3 w-3" /> {user?.plan || 'Free'}
                 </span>
               </div>

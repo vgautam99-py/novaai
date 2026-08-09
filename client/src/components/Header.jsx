@@ -7,6 +7,8 @@ import logo from '../assets/logo.jpg';
 const Header = ({ onMenuToggle }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  
+  console.log('[Header] Current User:', user);
 
   const handleLogout = async () => {
     await logout();
@@ -73,7 +75,7 @@ const Header = ({ onMenuToggle }) => {
         <div className="relative group">
           <div 
             onClick={() => navigate('/profile')}
-            className="w-9 h-9 rounded-full overflow-hidden cursor-pointer border border-[#27272A] hover:scale-105 transition-all flex items-center justify-center bg-primary/10 shadow-sm"
+            className="w-9 h-9 rounded-full overflow-hidden cursor-pointer border border-[#27272A] hover:scale-105 transition-all flex items-center justify-center bg-[#6366F1]/10 shadow-sm"
           >
             {user?.avatar ? (
               <img
@@ -82,7 +84,7 @@ const Header = ({ onMenuToggle }) => {
                 alt="Avatar"
               />
             ) : (
-              <span className="text-sm font-bold text-primary uppercase">
+              <span className="text-sm font-bold text-[#6366F1] uppercase">
                 {user?.name ? user.name.charAt(0) : 'U'}
               </span>
             )}
@@ -92,13 +94,15 @@ const Header = ({ onMenuToggle }) => {
           <div className="absolute right-0 mt-2.5 w-48 bg-[#111111] border border-[#27272A] rounded-xl shadow-xl p-3.5 text-left opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
             <h4 className="text-xs font-bold text-white leading-tight truncate">{user?.name || 'User'}</h4>
             <p className="text-[9px] text-[#A1A1AA] mt-0.5 truncate">{user?.email}</p>
+            
             <div className="mt-2.5 pt-2 border-t border-[#27272A] flex items-center justify-between">
               <span className="text-[9px] text-[#A1A1AA] font-bold uppercase tracking-wider">Plan</span>
-              <span className="text-[9px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full uppercase flex items-center gap-1">
+              <span className="text-[9px] font-bold text-[#6366F1] bg-[#6366F1]/10 px-2 py-0.5 rounded-full uppercase flex items-center gap-1">
                 <Award className="h-3 w-3" /> {user?.plan || 'Free'}
               </span>
             </div>
-            <div className="mt-1.5 sm:hidden flex items-center justify-between">
+
+            <div className="mt-1.5 sm:hidden flex items-center justify-between pt-1.5 border-t border-[#27272A]">
               <span className="text-[9px] text-[#A1A1AA] font-bold uppercase tracking-wider">Credits</span>
               <span className="text-[9px] font-bold text-[#A1A1AA]">
                 {creditsUsed} / {creditsLimit}
@@ -110,7 +114,7 @@ const Header = ({ onMenuToggle }) => {
         {/* Logout Button */}
         <button
           onClick={handleLogout}
-          className="w-9 h-9 rounded-full border border-rose-950 bg-rose-950/20 text-rose-400 hover:bg-rose-950/40 hover:text-rose-300 hover:border-rose-900 transition-all flex items-center justify-center shadow-sm cursor-pointer"
+          className="w-9 h-9 rounded-full border border-rose-950 bg-rose-950/20 text-rose-400 hover:bg-rose-950/40 hover:text-rose-300 hover:border-rose-900 transition-all hidden md:flex items-center justify-center shadow-sm cursor-pointer"
           title="Sign Out"
         >
           <LogOut className="h-4.5 w-4.5" />

@@ -1,7 +1,5 @@
 import User from '../models/User.js';
-import OTP from '../models/OTP.js';
 import generateToken from '../utils/generateToken.js';
-import { sendOTPEmail } from '../services/emailService.js';
 import jwt from 'jsonwebtoken';
 import axios from 'axios';
 
@@ -66,101 +64,7 @@ const verifyFirebaseGoogleToken = async (idToken) => {
   }
 };
 
-// @desc    Send verification OTP code to user email
-// @route   POST /api/auth/send-otp
-// @access  Public
-export const sendOTP = async (req, res) => {
-  const { email, mode } = req.body; // mode: 'login' or 'register'
-
-  if (!email) {
-    return res.status(400).json({ success: false, message: 'Email address is required' });
-  }
-
-  try {
-    const userExists = await User.findOne({ email });
-
-    // Validations based on auth intent
-    if (mode === 'register' && userExists) {
-      return res.status(400).json({ success: false, message: 'Email is already registered. Please login instead.' });
-    }
-    if (mode === 'login' && !userExists) {
-      return res.status(404).json({ success: false, message: 'Email is not registered. Please sign up first.' });
-    }
-
-    // Generate 6-digit OTP code
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
-    // Delete existing OTPs for the email
-    await OTP.deleteMany({ email });
-
-    // Store in DB
-    await OTP.create({ email, otp });
-
-    // Send the email via Mailjet
-    await sendOTPEmail(email, otp);
-
-    res.status(200).json({ success: true, message: 'Verification code sent successfully to your email.' });
-  } catch (error) {
-    console.error('Send OTP Error:', error);
-    res.status(500).json({ success: false, message: error.message });
-  }
-};
-
-// @desc    Verify OTP code & log in or register
-// @route   POST /api/auth/verify-otp
-// @access  Public
-export const verifyOTP = async (req, res) => {
-  const { email, otp, name } = req.body;
-
-  if (!email || !otp) {
-    return res.status(400).json({ success: false, message: 'Email and verification code are required' });
-  }
-
-  try {
-    // Check if OTP matches
-    const otpRecord = await OTP.findOne({ email, otp });
-
-    if (!otpRecord) {
-      return res.status(400).json({ success: false, message: 'Invalid or expired verification code' });
-    }
-
-    // Delete OTP record immediately
-    await OTP.deleteOne({ _id: otpRecord._id });
-
-    // Find or create user
-    let user = await User.findOne({ email });
-
-    if (!user) {
-      if (!name) {
-        return res.status(400).json({ success: false, message: 'User profile details missing for new signup' });
-      }
-
-      user = await User.create({
-        name,
-        email,
-      });
-    }
-
-    // Generate JWT access & refresh cookies
-    const { accessToken } = await generateToken(res, user._id);
-
-    res.status(200).json({
-      success: true,
-      token: accessToken,
-      user: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        avatar: user.avatar,
-        plan: user.plan,
-        aiCreditsUsed: user.aiCreditsUsed || 0,
-      }
-    });
-  } catch (error) {
-    console.error('Verify OTP Error:', error);
-    res.status(500).json({ success: false, message: error.message });
-  }
-};
+// OTP-based verification handlers removed (Option 2 - Auto Verify Signup)
 
 // @desc    Verify Firebase Google Sign-In
 // @route   POST /api/auth/firebase-google
@@ -185,14 +89,16 @@ export const firebaseGoogleAuth = async (req, res) => {
         email: googleUser.email,
         avatar: googleUser.avatar,
         firebaseUid: googleUser.firebaseUid,
+        isVerified: true,
       });
     } else {
       // Link firebaseUid if missing
       if (!user.firebaseUid) {
         user.firebaseUid = googleUser.firebaseUid;
         if (!user.avatar) user.avatar = googleUser.avatar;
-        await user.save();
       }
+      user.isVerified = true; // Auto-verify Google users even if they registered with password first
+      await user.save();
     }
 
     // Generate JWT cookies
@@ -207,6 +113,7 @@ export const firebaseGoogleAuth = async (req, res) => {
         email: user.email,
         avatar: user.avatar,
         plan: user.plan,
+        isVerified: user.isVerified,
         aiCreditsUsed: user.aiCreditsUsed || 0,
       }
     });
@@ -250,18 +157,14 @@ export const registerUser = async (req, res) => {
       password,
     });
 
-    const { accessToken } = await generateToken(res, user._id);
-
     res.status(201).json({
       success: true,
-      token: accessToken,
+      message: 'Account created successfully! Please sign in with your credentials.',
       user: {
         _id: user._id,
         name: user.name,
         email: user.email,
-        avatar: user.avatar,
-        plan: user.plan,
-        aiCreditsUsed: user.aiCreditsUsed || 0,
+        isVerified: false,
       }
     });
   } catch (error) {
@@ -294,6 +197,7 @@ export const authUser = async (req, res) => {
           email: user.email,
           avatar: user.avatar,
           plan: user.plan,
+          isVerified: user.isVerified || false,
           aiCreditsUsed: user.aiCreditsUsed || 0,
         }
       });
@@ -371,6 +275,7 @@ export const getUserProfile = async (req, res) => {
           email: user.email,
           avatar: user.avatar,
           plan: user.plan,
+          isVerified: user.isVerified || false,
           aiCreditsUsed: user.aiCreditsUsed || 0,
         }
       });
@@ -410,6 +315,7 @@ export const updateUserProfile = async (req, res) => {
           email: updatedUser.email,
           avatar: updatedUser.avatar,
           plan: updatedUser.plan,
+          isVerified: updatedUser.isVerified || false,
           aiCreditsUsed: updatedUser.aiCreditsUsed || 0,
         }
       });
@@ -465,6 +371,7 @@ export const refreshAccessToken = async (req, res) => {
         email: user.email,
         avatar: user.avatar,
         plan: user.plan,
+        isVerified: user.isVerified || false,
         aiCreditsUsed: user.aiCreditsUsed || 0,
       }
     });

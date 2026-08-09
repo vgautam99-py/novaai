@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { Sparkles, User as UserIcon, Mail, Shield, Key, Eye, HelpCircle, Activity, Award, Trash2, Globe } from 'lucide-react';
@@ -6,6 +7,7 @@ import toast from 'react-hot-toast';
 
 const MyProfile = () => {
   const { user, setUser } = useAuth();
+  const navigate = useNavigate();
   
   const [name, setName] = useState(user?.name || '');
   const [email, setEmail] = useState(user?.email || '');

@@ -132,10 +132,10 @@ const Landing = () => {
 
       {/* Sticky Navbar */}
       <header className="sticky top-0 z-50 px-6 py-4 flex items-center justify-between border-b border-[#27272A] bg-[#09090B]/70 backdrop-blur-md">
-        {/* Left Side Brand: Logo is shown on all screens, brand text is hidden on mobile */}
+        {/* Left Side Brand: Logo and brand text shown on all screens */}
         <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
           <img src={logo} alt="Logo" className="h-8 w-8 rounded-lg border border-[#27272A]" />
-          <span className="hidden md:inline font-['Outfit'] font-bold text-lg tracking-tight">
+          <span className="inline font-['Outfit'] font-bold text-lg tracking-tight">
             Nova<span className="bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] bg-clip-text text-transparent">AI</span>
           </span>
         </div>

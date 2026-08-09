@@ -92,8 +92,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const { data } = await axios.post('/api/auth/register', { name, email, password });
       if (data.success) {
-        setUser(data.user);
-        return { success: true };
+        return { success: true, message: data.message };
       }
       return { success: false, message: data.message || 'Signup failed' };
     } catch (error) {
@@ -129,41 +128,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Send Email OTP
-  const sendOTP = async (email, mode) => {
-    setLoading(true);
-    try {
-      const { data } = await axios.post('/api/auth/send-otp', { email, mode });
-      return { success: true, message: data.message };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.response?.data?.message || 'Failed to send verification code.',
-      };
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  // Verify Email OTP
-  const verifyOTP = async (email, otp, name = '') => {
-    setLoading(true);
-    try {
-      const { data } = await axios.post('/api/auth/verify-otp', { email, otp, name });
-      if (data.success) {
-        setUser(data.user);
-        return { success: true };
-      }
-      return { success: false, message: data.message || 'Verification failed.' };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.response?.data?.message || 'Invalid or expired code.',
-      };
-    } finally {
-      setLoading(false);
-    }
-  };
 
   // Logout
   const logout = async () => {
@@ -186,8 +151,6 @@ export const AuthProvider = ({ children }) => {
     register,
     loginWithGoogle,
     logout,
-    sendOTP,
-    verifyOTP,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -170,6 +170,13 @@ const Sidebar = ({ isOpen, onClose }) => {
                     </button>
                   );
                 })}
+                <button
+                  onClick={handleLogout}
+                  className={`w-full flex items-center gap-3 px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${inactiveClass}`}
+                >
+                  <span className="text-[#A1A1AA]"><LogOut className="h-4 w-4" /></span>
+                  <span>Sign Out</span>
+                </button>
               </div>
             </div>
           </div>
