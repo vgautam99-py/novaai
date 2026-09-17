@@ -20,12 +20,15 @@ import {
   Layers, 
   Shield, 
   Clock, 
-  Download 
+  Download,
+  Menu,
+  X
 } from 'lucide-react';
 import logo from '../assets/logo.jpg';
 
 const Landing = () => {
   const navigate = useNavigate();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   // Spotlight effect tracking
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -131,7 +134,7 @@ const Landing = () => {
       <div className="absolute top-[30%] right-[-10%] w-[45vw] h-[45vw] rounded-full bg-[radial-gradient(circle,rgba(6,182,212,0.05)_0%,transparent_70%)] blur-3xl pointer-events-none" />
 
       {/* Sticky Navbar */}
-      <header className="sticky top-0 z-50 px-6 py-4 flex items-center justify-between border-b border-[#27272A] bg-[#09090B]/70 backdrop-blur-md">
+      <header className="sticky top-0 z-50 px-6 py-4 flex items-center justify-between border-b border-[#27272A] bg-[#09090B]/80 backdrop-blur-md">
         {/* Left Side Brand: Logo and brand text shown on all screens */}
         <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
           <img src={logo} alt="Logo" className="h-8 w-8 rounded-lg border border-[#27272A]" />
@@ -140,6 +143,7 @@ const Landing = () => {
           </span>
         </div>
 
+        {/* Desktop Navigation Links */}
         <nav className="hidden md:flex items-center gap-8 text-xs font-semibold text-[#A1A1AA]">
           <a href="#features" className="hover:text-white transition-colors">Features</a>
           <a href="#tools" className="hover:text-white transition-colors">Tools</a>
@@ -148,21 +152,130 @@ const Landing = () => {
           <a href="#faq" className="hover:text-white transition-colors">FAQ</a>
         </nav>
 
-        <div className="flex items-center gap-4">
+        {/* Desktop Action Buttons */}
+        <div className="hidden md:flex items-center gap-4">
           <button 
             onClick={() => navigate('/login')}
             className="text-xs font-semibold text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
           >
-            Sign In
+            Sign in
           </button>
           <button 
             onClick={() => navigate('/login?tab=register')}
-            className="hidden md:inline px-4 py-2 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] hover:opacity-95 text-white rounded-xl text-xs font-bold shadow-md shadow-indigo-600/10 cursor-pointer transition-all"
+            className="px-4 py-2 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] hover:opacity-95 text-white rounded-xl text-xs font-bold shadow-md shadow-indigo-600/10 cursor-pointer transition-all"
           >
-            Get Started Free
+            Sign up
           </button>
         </div>
+
+        {/* Mobile Hamburger Button */}
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="md:hidden p-2 rounded-xl border border-[#27272A] bg-[#111111] text-[#A1A1AA] hover:text-white focus:outline-none transition-colors cursor-pointer"
+          aria-label="Toggle menu"
+        >
+          {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        </button>
       </header>
+
+      {/* Mobile Navigation Slider Drawer */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-50 md:hidden">
+          {/* Backdrop Overlay */}
+          <div 
+            className="fixed inset-0 bg-black/75 backdrop-blur-sm transition-opacity duration-300"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+
+          {/* Slider Drawer Content */}
+          <div className="fixed top-0 right-0 h-full w-[280px] sm:w-[320px] bg-[#0E0E11] border-l border-[#27272A] p-6 shadow-2xl flex flex-col justify-start z-50 transform transition-transform duration-300 ease-in-out overflow-y-auto">
+            {/* Drawer Top Branding & Close Button */}
+            <div className="flex items-center justify-between pb-4 border-b border-[#27272A]">
+              <div 
+                className="flex items-center gap-2 cursor-pointer" 
+                onClick={() => { 
+                  setMobileMenuOpen(false); 
+                  navigate('/'); 
+                }}
+              >
+                <img src={logo} alt="Logo" className="h-7 w-7 rounded-lg border border-[#27272A]" />
+                <span className="font-['Outfit'] font-bold text-base tracking-tight text-white">
+                  Nova<span className="bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] bg-clip-text text-transparent">AI</span>
+                </span>
+              </div>
+              <button
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-1.5 rounded-lg border border-[#27272A] bg-[#18181B] text-[#A1A1AA] hover:text-white transition-colors cursor-pointer"
+                aria-label="Close menu"
+              >
+                <X className="h-4.5 w-4.5" />
+              </button>
+            </div>
+
+            {/* Mobile Navigation Menu Links */}
+            <nav className="flex flex-col gap-2 pt-4 text-sm font-semibold text-[#A1A1AA]">
+              <a 
+                href="#features" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="hover:text-white hover:translate-x-1 transition-all py-2 border-b border-[#1F1F23]/40"
+              >
+                Features
+              </a>
+              <a 
+                href="#tools" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="hover:text-white hover:translate-x-1 transition-all py-2 border-b border-[#1F1F23]/40"
+              >
+                Tools
+              </a>
+              <a 
+                href="#demo" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="hover:text-white hover:translate-x-1 transition-all py-2 border-b border-[#1F1F23]/40"
+              >
+                Workflow
+              </a>
+              <a 
+                href="#pricing" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="hover:text-white hover:translate-x-1 transition-all py-2 border-b border-[#1F1F23]/40"
+              >
+                Pricing
+              </a>
+              <a 
+                href="#faq" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="hover:text-white hover:translate-x-1 transition-all py-2"
+              >
+                FAQ
+              </a>
+            </nav>
+
+            {/* Mobile Slider Drawer Action Buttons - Immediately following items */}
+            <div className="pt-4 mt-2 border-t border-[#27272A] space-y-3">
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  navigate('/login');
+                }}
+                className="w-full py-3 px-4 rounded-xl border border-[#27272A] bg-[#18181B] hover:bg-[#27272A] text-white text-xs font-bold transition-all text-center cursor-pointer shadow-sm"
+              >
+                Sign in
+              </button>
+
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  navigate('/login?tab=register');
+                }}
+                className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] hover:opacity-95 text-white text-xs font-bold transition-all text-center cursor-pointer shadow-lg shadow-indigo-600/20"
+              >
+                Sign up
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex flex-col items-center justify-center px-6 pt-12 pb-24 max-w-7xl mx-auto z-20">
@@ -188,7 +301,7 @@ const Landing = () => {
 
             <div className="flex flex-wrap gap-4 pt-2">
               <button 
-                onClick={() => navigate('/login')}
+                onClick={() => navigate('/login?tab=register')}
                 className="px-6 py-3.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] hover:opacity-95 text-white font-bold rounded-xl text-xs flex items-center gap-2 shadow-lg shadow-indigo-600/20 transition-all cursor-pointer"
               >
                 Start Free <ArrowRight className="h-4 w-4" />
@@ -692,7 +805,7 @@ const Landing = () => {
                 </ul>
               </div>
               <button 
-                onClick={() => navigate('/login')}
+                onClick={() => navigate('/login?tab=register')}
                 className="w-full py-2.5 bg-[#18181B] hover:bg-[#27272A] text-white rounded-xl text-xs font-bold border border-[#27272A] transition-all cursor-pointer"
               >
                 Get Started
@@ -732,7 +845,7 @@ const Landing = () => {
                 </ul>
               </div>
               <button 
-                onClick={() => navigate('/login')}
+                onClick={() => navigate('/login?tab=register')}
                 className="w-full py-2.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] hover:opacity-95 text-white rounded-xl text-xs font-bold shadow-md transition-all cursor-pointer"
               >
                 Upgrade to Pro
@@ -874,7 +987,7 @@ const Landing = () => {
           </p>
           <div className="flex justify-center gap-4">
             <button 
-              onClick={() => navigate('/login')}
+              onClick={() => navigate('/login?tab=register')}
               className="px-8 py-3.5 bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] hover:opacity-95 text-white font-bold rounded-xl text-xs shadow-md cursor-pointer transition-all"
             >
               Get Started Free

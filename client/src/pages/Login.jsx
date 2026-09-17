@@ -31,6 +31,15 @@ const Login = () => {
   }, [user, navigate]);
 
   useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam === 'register') {
+      setTab('register');
+    } else if (tabParam === 'login') {
+      setTab('login');
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
     let timer;
     if (resendCooldown > 0) {
       timer = setInterval(() => {
